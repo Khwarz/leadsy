@@ -15,17 +15,14 @@ class Settings(BaseSettings):
     db_port: str
     db_user: str
     db_password: str
-    database_uri: str | None = None
 
-    @validator("database_uri", pre=True)
-    def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
-        if isinstance(v, str):
-            return v
-        username = values.get("db_user")
-        password = values.get("db_password")
-        host = values.get("db_host")
-        port = values.get("db_port")
-        return f"postgresql://{username}:{password}@{host}:{port}/{values.get('db_database')}"
+    @property
+    def database_uri(self) -> str:
+        username = self.db_user
+        password = self.db_password
+        host = self.db_host
+        port = self.db_port
+        return f"postgresql://{username}:{password}@{host}:{port}/{self.db_database}"
 
 
 @lru_cache
