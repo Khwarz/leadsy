@@ -20,6 +20,8 @@ dependencies = [
 test = [
     "pytest",
     "mypy",
+    "coverage",
+    "isort",
 ]
 
 [tool.mypy]
