@@ -20,3 +20,14 @@ test = [
     "pytest",
     "mypy",
 ]
+
+[tool.mypy]
+strict = true
+
+[tool.ruff]
+select = ["E", "W", "C", "B"]
+ignore = [
+    "E501",
+    "B008",
+    "C901",
+]
