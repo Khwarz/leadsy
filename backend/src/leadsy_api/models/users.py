@@ -12,9 +12,11 @@ class User(Base):
     id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
     full_name: Mapped[str]
     email: Mapped[str] = mapped_column(unique=True)
-    email_verified_at: Mapped[datetime | None]
+    email_verified_at: Mapped[datetime | None] = mapped_column(nullable=True)
     hashed_password: Mapped[str]
-    created_at: Mapped[datetime | None] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime | None] = mapped_column(
+        server_default=func.now(), nullable=True
+    )
     updated_at: Mapped[datetime | None] = mapped_column(
-        server_default=func.now(), onupdate=func.now()
+        server_default=func.now(), onupdate=func.now(), nullable=True
     )
