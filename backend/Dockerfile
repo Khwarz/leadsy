@@ -9,8 +9,11 @@ ENV FLIT_ROOT_INSTALL 1
 RUN apt-get update -y
 
 RUN pip install --upgrade pip
+
 COPY ./pyproject.toml ./pyproject.toml
+
 RUN pip install flit
+
 COPY . /backend
 
 RUN python -m flit install

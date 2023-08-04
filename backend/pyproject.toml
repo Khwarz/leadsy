@@ -10,7 +10,8 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = [
     "fastapi[all]",
-    "SQLAlchemy",
+    "SQLAlchemy>=2.0",
+    "psycopg2-binary",
     "alembic",
     "databases[postgresql]",
 ]
