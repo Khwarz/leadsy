@@ -1,7 +1,5 @@
 from functools import lru_cache
-from typing import Any
 
-from pydantic import validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,19 +8,27 @@ class Settings(BaseSettings):
 
     app_name: str
     app_key: str
-    db_database: str
-    db_host: str
-    db_port: str
-    db_user: str
-    db_password: str
+    postgres_db: str
+    postgres_host: str
+    postgres_port: str
+    postgres_user: str
+    postgres_password: str
 
     @property
     def database_uri(self) -> str:
-        username = self.db_user
-        password = self.db_password
-        host = self.db_host
-        port = self.db_port
-        return f"postgresql://{username}:{password}@{host}:{port}/{self.db_database}"
+        username = self.postgres_user
+        password = self.postgres_password
+        host = self.postgres_host
+        port = self.postgres_port
+        return f"postgresql://{username}:{password}@{host}:{port}/{self.postgres_db}"
+
+    @property
+    def test_database_uri(self) -> str:
+        username = self.postgres_user
+        password = self.postgres_password
+        host = self.postgres_host
+        port = self.postgres_port
+        return f"postgresql://{username}:{password}@{host}:{port}/testing"
 
 
 @lru_cache
