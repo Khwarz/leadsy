@@ -6,8 +6,11 @@ from sqlalchemy import Engine, RootTransaction, create_engine, event
 from sqlalchemy.orm import Session, sessionmaker
 
 from leadsy_api.core.config import get_settings
+from leadsy_api.core.security import generate_hash
+from leadsy_api.database.base import Base
 from leadsy_api.database.session import get_db
 from leadsy_api.main import app
+from leadsy_api.models.users import User
 
 
 @pytest.fixture()
@@ -17,6 +20,8 @@ def engine() -> Engine:
 
 @pytest.fixture()
 def session_local(engine: Engine) -> sessionmaker[Session]:
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     return sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -48,5 +53,15 @@ def client(session: Session) -> Generator[TestClient, None, None]:
         yield session
 
     app.dependency_overrides[get_db] = override_get_db
+
     yield TestClient(app)
     del app.dependency_overrides[get_db]
+
+
+@pytest.fixture()
+def test_user() -> User:
+    return User(
+        full_name="John Doe",
+        email="johndoe@example.com",
+        hashed_password=generate_hash("password"),
+    )

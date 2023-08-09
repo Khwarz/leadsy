@@ -7,7 +7,7 @@ from leadsy_api.core.config import get_settings
 
 def get_application() -> FastAPI:
     app = FastAPI(title=get_settings().app_name, version="0.0.1")
-    app.include_router(router=api_router, prefix="/api")
+    app.include_router(router=api_router, prefix=f"/api/{get_settings().api_version}")
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
