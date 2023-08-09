@@ -16,4 +16,4 @@ RUN pip install flit
 
 COPY . /backend
 
-RUN python -m flit install
+RUN python -m flit install --symlink
