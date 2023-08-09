@@ -14,7 +14,8 @@ dependencies = [
     "psycopg2-binary",
     "alembic",
     "databases[postgresql]",
-    "passlib[bcrypt]"
+    "passlib[bcrypt]",
+    "python-jose[cryptography]"
 ]
 
 [project.optional-dependencies]

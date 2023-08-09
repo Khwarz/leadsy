@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     postgres_port: str
     postgres_user: str
     postgres_password: str
+    access_token_expires_minutes: int = 54600
 
     @computed_field  # type: ignore[misc]
     @property
