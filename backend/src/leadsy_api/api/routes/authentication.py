@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from leadsy_api.core.security import check_password, create_access_token
 from leadsy_api.database.session import get_db
+from leadsy_api.models.personal_access_tokens import PersonalAccessToken
 from leadsy_api.models.users import User
 from leadsy_api.schemas.token import AccessTokenResponse
 
@@ -14,7 +15,7 @@ router = APIRouter()
 
 
 @router.post("/token")
-async def login(
+async def generate_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Annotated[Session, Depends(get_db)],
 ) -> AccessTokenResponse:
@@ -25,4 +26,6 @@ async def login(
             detail="Your credentials does not match our records",
         )
     access_token = create_access_token(user.email)
+    db.add(PersonalAccessToken(user_id=user.id, token=access_token))
+    db.commit()
     return AccessTokenResponse(token_type="Bearer", access_token=access_token)

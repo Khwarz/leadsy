@@ -1,7 +1,9 @@
 from fastapi import status
 from fastapi.testclient import TestClient
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from leadsy_api.models.personal_access_tokens import PersonalAccessToken
 from leadsy_api.models.users import User
 
 
@@ -14,9 +16,14 @@ def test_it_should_generate_token(
     data = {"username": test_user.email, "password": "password"}
     response = client.post("/api/v1/oauth2/token", data=data)
     content = response.json()
+    personal_access_token = session.scalars(
+        select(PersonalAccessToken).filter_by(token=content["accessToken"])
+    ).first()
     assert response.status_code == 200
     assert "accessToken" in content
     assert content["accessToken"] is not None
+    assert personal_access_token is not None
+    assert personal_access_token.token == content["accessToken"]
 
 
 def test_it_should_not_work_with_invalid_credentials(
