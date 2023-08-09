@@ -3,7 +3,7 @@ from pydantic.alias_generators import to_camel
 
 
 class AccessTokenResponse(BaseModel):
-    model_config = ConfigDict(alias_generator=to_camel, from_attributes=True)
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
     token_type: str
     access_token: str
