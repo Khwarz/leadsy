@@ -1,9 +1,10 @@
 from datetime import datetime
 
 from sqlalchemy import ForeignKey, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from leadsy_api.database.base import Base
+from leadsy_api.models.users import User
 
 
 class PersonalAccessToken(Base):
@@ -12,6 +13,9 @@ class PersonalAccessToken(Base):
     id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     token: Mapped[str] = mapped_column(unique=True)
+
+    user: Mapped[User] = relationship()
+
     created_at: Mapped[datetime | None] = mapped_column(
         server_default=func.now(), nullable=True
     )
