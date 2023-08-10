@@ -2,10 +2,10 @@ import logging
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import engine_from_config
 
 from leadsy_api.core.config import get_settings
-from leadsy_api.models import Base
+from leadsy_api.models import Base  # type: ignore
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

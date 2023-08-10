@@ -7,3 +7,7 @@ class AccessTokenResponse(BaseModel):
 
     token_type: str
     access_token: str
+
+
+class RevokeAccessTokenRequest(BaseModel):
+    token: str

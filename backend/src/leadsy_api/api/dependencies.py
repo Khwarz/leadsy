@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from leadsy_api.core.security import reusable_oauth_scheme
 from leadsy_api.database.session import get_db
-from leadsy_api.models.personal_access_tokens import PersonalAccessToken
+from leadsy_api.models.access_tokens import PersonalAccessToken
 from leadsy_api.models.users import User
 
 

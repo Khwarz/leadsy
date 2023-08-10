@@ -12,7 +12,9 @@ class PersonalAccessToken(Base):
 
     id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey(
+            "users.id", ondelete="CASCADE", onupdate="CASCADE", name="user_token_fk"
+        )
     )
     token: Mapped[str] = mapped_column(unique=True)
 

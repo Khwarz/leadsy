@@ -1,3 +1,3 @@
-from leadsy_api.database.base import Base
-from leadsy_api.models.personal_access_tokens import PersonalAccessToken
-from leadsy_api.models.users import User
+from leadsy_api.database.base import Base  # pyright: ignore
+from leadsy_api.models.access_tokens import PersonalAccessToken  # pyright: ignore
+from leadsy_api.models.users import User  # pyright: ignore

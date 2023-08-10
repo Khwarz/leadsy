@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt

@@ -11,6 +11,7 @@ from leadsy_api.database.base import Base
 from leadsy_api.database.session import get_db
 from leadsy_api.main import app
 from leadsy_api.models.users import User
+from leadsy_api.schemas.token import AccessTokenResponse
 
 
 @pytest.fixture()
@@ -35,7 +36,7 @@ def session(
     nested = connection.begin_nested()
 
     @event.listens_for(session, "after_transaction_end")
-    def after_transaction_end(session: Session, transaction: RootTransaction) -> None:
+    def listener(s: Session, t: RootTransaction) -> None:  # pyright: ignore
         nonlocal nested
         if not nested.is_active:
             nested = connection.begin_nested()
@@ -59,9 +60,25 @@ def client(session: Session) -> Generator[TestClient, None, None]:
 
 
 @pytest.fixture()
-def test_user() -> User:
-    return User(
+def test_user(session: Session) -> User:
+    user = User(
         full_name="John Doe",
         email="johndoe@example.com",
         hashed_password=generate_hash("password"),
     )
+    session.add(user)
+    session.commit()
+    return user
+
+
+@pytest.fixture()
+def test_user_access_token(client: TestClient, test_user: User) -> str:
+    data = {"username": test_user.email, "password": "password"}
+    response = client.post("api/v1/oauth2/token", data=data)
+    token_response = AccessTokenResponse(**response.json())
+    return token_response.access_token
+
+
+@pytest.fixture()
+def test_auth_headers(test_user_access_token: str) -> dict[str, str]:
+    return {"Authorization": f"Bearer {test_user_access_token}"}

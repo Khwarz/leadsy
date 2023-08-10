@@ -10,9 +10,9 @@ from leadsy_api.api.dependencies import get_current_user
 from leadsy_api.core.config import get_settings
 from leadsy_api.core.security import check_password, create_access_token
 from leadsy_api.database.session import get_db
-from leadsy_api.models.personal_access_tokens import PersonalAccessToken
+from leadsy_api.models.access_tokens import PersonalAccessToken
 from leadsy_api.models.users import User
-from leadsy_api.schemas.token import AccessTokenResponse
+from leadsy_api.schemas.token import AccessTokenResponse, RevokeAccessTokenRequest
 
 router = APIRouter()
 
@@ -42,11 +42,11 @@ async def generate_access_token(
 @router.post("/revoke")
 async def revoke_access_token(
     _: Annotated[User, Depends(get_current_user)],
-    token: str,
     db: Annotated[Session, Depends(get_db)],
+    revoke_access_token_request: RevokeAccessTokenRequest,
 ) -> None:
     personal_access_token = db.scalars(
-        select(PersonalAccessToken).filter_by(token=token)
+        select(PersonalAccessToken).filter_by(token=revoke_access_token_request.token)
     ).first()
     db.delete(personal_access_token)
     db.commit()
