@@ -11,10 +11,14 @@ class PersonalAccessToken(Base):
     __tablename__ = "personal_access_tokens"
 
     id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE")
+    )
     token: Mapped[str] = mapped_column(unique=True)
 
     user: Mapped[User] = relationship()
+
+    expires_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
     created_at: Mapped[datetime | None] = mapped_column(
         server_default=func.now(), nullable=True

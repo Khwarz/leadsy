@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -6,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from leadsy_api.api.dependencies import get_current_user
+from leadsy_api.core.config import get_settings
 from leadsy_api.core.security import check_password, create_access_token
 from leadsy_api.database.session import get_db
 from leadsy_api.models.personal_access_tokens import PersonalAccessToken
@@ -26,8 +28,13 @@ async def generate_access_token(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Your credentials does not match our records",
         )
-    access_token = create_access_token(user.email)
-    db.add(PersonalAccessToken(user_id=user.id, token=access_token))
+    expires_at = datetime.utcnow() + timedelta(
+        minutes=get_settings().access_token_expires_minutes
+    )
+    access_token = create_access_token(user.email, expires_at=expires_at)
+    db.add(
+        PersonalAccessToken(user_id=user.id, token=access_token, expires_at=expires_at)
+    )
     db.commit()
     return AccessTokenResponse(token_type="Bearer", access_token=access_token)
 

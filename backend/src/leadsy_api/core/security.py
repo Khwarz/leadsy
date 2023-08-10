@@ -20,13 +20,7 @@ def check_password(plain_text: str, password: str) -> bool:
     return password_context.verify(plain_text, password)
 
 
-def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
-    delta = (
-        expires_delta
-        if expires_delta is not None
-        else timedelta(minutes=get_settings().access_token_expires_minutes)
-    )
-    expires_at = datetime.utcnow() + delta
+def create_access_token(subject: str, *, expires_at: datetime) -> str:
     payload = {"sub": subject, "exp": expires_at}
     encoded = jwt.encode(payload, get_settings().app_key, algorithm="HS256")
     return encoded
