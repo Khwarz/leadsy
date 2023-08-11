@@ -13,7 +13,6 @@ dependencies = [
     "SQLAlchemy>=2.0",
     "psycopg2-binary",
     "alembic",
-    "databases[postgresql]",
     "passlib[bcrypt]",
     "python-jose[cryptography]"
 ]
