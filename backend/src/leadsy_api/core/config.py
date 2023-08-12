@@ -17,6 +17,14 @@ class Settings(BaseSettings):
     postgres_password: str
     access_token_expires_minutes: int = 54600
 
+    mail_host: str
+    mail_port: int
+    mail_username: str
+    mail_password: str
+    mail_tls: bool
+    mail_from_address: str
+    mail_from_name: str
+
     @computed_field  # type: ignore[misc]
     @property
     def database_uri(self) -> str:

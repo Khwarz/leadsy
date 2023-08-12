@@ -14,7 +14,8 @@ dependencies = [
     "psycopg2-binary",
     "alembic",
     "passlib[bcrypt]",
-    "python-jose[cryptography]"
+    "python-jose[cryptography]",
+    "fastapi-mail"
 ]
 
 [project.optional-dependencies]
