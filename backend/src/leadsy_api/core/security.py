@@ -1,3 +1,5 @@
+import hashlib
+import os
 from datetime import datetime
 
 from fastapi.security import OAuth2PasswordBearer
@@ -24,3 +26,7 @@ def create_access_token(subject: str, *, expires_at: datetime) -> str:
     payload = {"sub": subject, "exp": expires_at}
     encoded = jwt.encode(payload, get_settings().app_key, algorithm="HS256")
     return encoded
+
+
+def generate_random_password_token() -> str:
+    return hashlib.md5(os.urandom(32)).hexdigest()
