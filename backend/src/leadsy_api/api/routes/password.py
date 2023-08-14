@@ -69,8 +69,8 @@ def reset_password(
 
     if password_reset_token is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Password reset token not found",
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="The provided password reset token is invalid",
         )
 
     if password_reset_token.expires_at <= datetime.now():
