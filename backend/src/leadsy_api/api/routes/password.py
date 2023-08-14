@@ -62,7 +62,9 @@ def reset_password(
     reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)
 ) -> None:
     password_reset_token = db.scalars(
-        select(PasswordResetToken).filter_by(token=reset_password_request.token)
+        select(PasswordResetToken).filter_by(
+            token=reset_password_request.token, email=reset_password_request.email
+        )
     ).first()
 
     if password_reset_token is None:
