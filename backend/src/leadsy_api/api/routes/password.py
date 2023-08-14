@@ -50,9 +50,7 @@ async def forgot_password(
         subject="Password Reset URL for your account",
         template_name="forgot_password.html",
         data={
-            "reset_link": router.url_path_for(
-                "reset_password", token=password_reset_token.token
-            ),
-            "support_email": "",  # TODO: add support email
+            "reset_link": f"{get_settings().frontend_url}/password-reset/{password_reset_token.token}?email={password_reset_token.email}",
+            "support_email": get_settings().mail_from_address,  # TODO: add support email
         },
     )
