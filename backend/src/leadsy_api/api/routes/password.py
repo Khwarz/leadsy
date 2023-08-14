@@ -6,10 +6,11 @@ from sqlalchemy.orm import Session
 
 from leadsy_api.core.config import get_settings
 from leadsy_api.core.mailing import send_email
-from leadsy_api.core.security import generate_random_password_token
+from leadsy_api.core.security import generate_hash, generate_random_password_token
 from leadsy_api.database.session import get_db
 from leadsy_api.models.password_reset_tokens import PasswordResetToken
-from leadsy_api.schemas.password import ForgotPasswordRequest
+from leadsy_api.models.users import User
+from leadsy_api.schemas.password import ForgotPasswordRequest, ResetPasswordRequest
 
 router = APIRouter()
 
@@ -25,11 +26,11 @@ async def forgot_password(
 
     if (
         password_reset_token is not None
-        and password_reset_token.expires_at < datetime.now()
+        and password_reset_token.expires_at > datetime.now()
     ):
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Too many password reset tokens links requested",
+            detail=f"You have to wait {get_settings().password_token_expires_minutes} before trying to reset your password",
         )
 
     if password_reset_token is not None:
@@ -38,7 +39,7 @@ async def forgot_password(
 
     token = generate_random_password_token()
     expires_at = datetime.now() + timedelta(
-        seconds=get_settings().password_token_expires_seconds
+        minutes=get_settings().password_token_expires_minutes
     )
     password_reset_token = PasswordResetToken(
         email=forgot_password_request.email, token=token, expires_at=expires_at
@@ -54,3 +55,37 @@ async def forgot_password(
             "support_email": get_settings().mail_from_address,  # TODO: add support email
         },
     )
+
+
+@router.post("/")
+def reset_password(
+    reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)
+) -> None:
+    password_reset_token = db.scalars(
+        select(PasswordResetToken).filter_by(token=reset_password_request.token)
+    ).first()
+
+    if password_reset_token is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Password reset token not found",
+        )
+
+    if password_reset_token.expires_at <= datetime.now():
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail=f"The reset token link has expired",
+        )
+
+    user = db.scalars(select(User).filter_by(email=password_reset_token.email)).first()
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Your credentials are not valid",
+        )
+
+    user.hashed_password = generate_hash(reset_password_request.password)
+
+    db.delete(password_reset_token)
+    db.commit()

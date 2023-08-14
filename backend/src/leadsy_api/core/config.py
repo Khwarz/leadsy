@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     postgres_user: str
     postgres_password: str
     access_token_expires_minutes: int = 54600
-    password_token_expires_seconds: int = 60
+    password_token_expires_minutes: int = 60
     frontend_url: str
 
     mail_host: str
