@@ -14,7 +14,7 @@ from leadsy_api.schemas.password import ForgotPasswordRequest
 router = APIRouter()
 
 
-@router.get("/forgot-password")
+@router.post("/forgot-password")
 async def forgot_password(
     forgot_password_request: ForgotPasswordRequest,
     db: Session = Depends(get_db),

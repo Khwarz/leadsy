@@ -11,7 +11,7 @@ configuration = ConnectionConfig(
     MAIL_FROM=get_settings().mail_from_address,
     MAIL_PORT=get_settings().mail_port,
     MAIL_SERVER=get_settings().mail_host,
-    MAIL_STARTTLS=get_settings().mail_tls,
+    MAIL_STARTTLS=True,
     MAIL_SSL_TLS=False,
     TEMPLATE_FOLDER=Path(__file__).parent.parent / "emails",
 )

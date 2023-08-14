@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from leadsy_api.api.routes.authentication import router as auth_router
-from leadsy_api.api.routes.password import password_router
+from leadsy_api.api.routes.password import router as password_router
 from leadsy_api.api.routes.users import router as users_router
 
 router = APIRouter()
