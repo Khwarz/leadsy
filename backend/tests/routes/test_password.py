@@ -47,7 +47,6 @@ def test_it_should_update_user_password(
             "email": test_user.email,
             "token": token,
             "password": "new-password",
-            "passwordConfirmation": "new-password",
         },
     )
     session.refresh(test_user)
