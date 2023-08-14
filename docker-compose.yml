@@ -20,5 +20,13 @@ services:
       - ./backend/.env
     ports:
       - 5432:5432
+  mailpit:
+    image: axllent/mailpit
+    volumes:
+      - mailpit-data:/data
+    ports:
+      - 1025:1025
+      - 8025:8025
 volumes:
   postgres-data:
+  mailpit-data:
